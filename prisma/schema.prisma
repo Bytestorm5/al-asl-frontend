@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+type ClassesCourses {
+  description      String
+  details          String
+  id               String
+  name             String
+  notice           String
+  price            Float
+  registrationOpen Boolean
+  translation      String
+}
+
+model blog {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  author  String
+  content String
+  slug    String
+  title   String
+}
+
+model classes {
+  id          String           @id @default(auto()) @map("_id") @db.ObjectId
+  courses     ClassesCourses[]
+  description String
+  name        String
+  slug        String
+  target      String
+}
+
+model logs {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  /// Field referred in an index, but found no data to define the type.
+  metadata  Json?
+  /// Field referred in an index, but found no data to define the type.
+  timestamp Json?
+
+  @@index([metadata, timestamp], map: "metadata_1_timestamp_1")
+}
+
+model registrations {
+  id            String  @id @default(auto()) @map("_id") @db.ObjectId
+  classId       String  @db.ObjectId
+  country       String
+  courseId      String
+  email         String
+  firstTime     Boolean
+  name          String
+  nationality   String
+  number        String
+  paymentStatus String
+  paymentType   String
+}
+
+model users {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  password String
+  username String
+}
