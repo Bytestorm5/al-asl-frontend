@@ -18,3 +18,37 @@
     margin: 0;
   }
 }
+
+
+@layer utilities {
+  .asl-gradient-static {
+    background: linear-gradient(145deg, oklch(52.5% 0.1276 0.2), oklch(70.22% 0.1025 60.74));
+  }
+
+  /* Base gradient for the element */
+  .asl-gradient {
+    position: relative;
+    background: linear-gradient(145deg, oklch(52.5% 0.1276 0.2), oklch(70.22% 0.1025 60.74));
+    transition: opacity 0.3s ease; /* Smooth transition */
+    z-index: 1; /* Ensure the text remains above */
+  }
+
+  /* Pseudo-element with the hover gradient */
+  .asl-gradient::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(145deg, oklch(70.22% 0.1025 60.74), oklch(52.5% 0.1276 0.2));
+    z-index: -1; /* Place behind the button content */
+    opacity: 0; /* Start invisible */
+    transition: opacity 0.3s ease; /* Smooth transition */
+  }
+
+  /* On hover, fade in the pseudo-element */
+  .asl-gradient:hover::before {
+    opacity: 1;
+  }
+}

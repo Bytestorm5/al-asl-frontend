@@ -1,91 +1,118 @@
 "use server";
 
-import prisma from "@/lib/db";
-import { classes } from "@prisma/client";
+import Papa from 'papaparse';
+import { CourseCategory, CourseList, GetCategoriesResponse } from "./moodleTypes";
 
 export async function getOpenClasses() {
   try {
-    const openClasses = (await prisma.classes.findMany({
-      where: {
-        courses: {
-          some: {
-            registrationOpen: true,
-          },
-        },
-      },
-      include: {
-        courses: true, // This will include the 'courses' field in the result
-      },
-      cacheStrategy: {
-        ttl: process.env.NODE_ENV === "production" ? 300 : 0,
-      },
-    })) as classes[];
+    const url = `https://moodle.al-asl.com/moodle/webservice/rest/server.php?wstoken=${process.env.MOODLE_TOKEN}&wsfunction=core_course_get_courses&moodlewsrestformat=json`
+    
+    const response = await fetch(url);
 
-    return openClasses.map((openClass) => ({
-      ...openClass,
-      courses: openClass.courses.map((course) => ({
-        ...course,
-        target: openClass.target,
-      })),
-    }));
+    // Check if the request was successful
+    if (!response.ok) {
+      throw new Error(`Failed to fetch. Status code: ${response.status}`);
+    }
+
+    // Parse the JSON payload
+    let data = await response.json() as CourseList;
+    data = data.filter((x) => x.id > 1 && x.format != "site")
+
+    // Return the fetched data
+    return data;
   } catch (error) {
-    console.error("Error fetching open classes:", error);
-    throw new Error("Failed to fetch open classes.");
+    console.error('Error fetching open classes:', error);
+    throw new Error('Failed to fetch open classes.');
   }
 }
+
+export async function getCourseCategories(): Promise<Record<number, CourseCategory>> {
+  try {
+    const url = `https://moodle.al-asl.com/moodle/webservice/rest/server.php?wstoken=${process.env.MOODLE_TOKEN}&wsfunction=core_course_get_categories&moodlewsrestformat=json`;
+    
+    const response = await fetch(url);
+
+    // Check if the request was successful
+    if (!response.ok) {
+      throw new Error(`Failed to fetch. Status code: ${response.status}`);
+    }
+
+    // Parse the JSON payload
+    const data = await response.json() as CourseCategory[];
+    // Transform the response into a dictionary of category ID to category object
+    const categoryDictionary = data.reduce<Record<number, CourseCategory>>((dict, category) => {
+      dict[category.id] = category;
+      return dict;
+    }, {});
+
+    // Return the transformed dictionary
+    return categoryDictionary;
+  } catch (error) {
+    console.error('Error fetching course categories:', error);
+    
+    throw new Error('Failed to fetch course categories.');
+  }
+}
+
 
 export async function getClassBySlug(slug: string) {
   try {
-    const cls = (await prisma.classes.findFirst({
-      where: {
-        slug,
-      },
-      include: {
-        courses: true,
-      },
-      cacheStrategy: {
-        ttl: process.env.NODE_ENV === "production" ? 300 : 0,
-      },
-    })) as classes;
+    const url = `https://moodle.al-asl.com/moodle/webservice/rest/server.php?wstoken=${process.env.MOODLE_TOKEN}&wsfunction=core_course_search_courses&moodlewsrestformat=json&criterianame=search&criteriavalue=${encodeURIComponent(
+      slug
+    )}&page=0&perpage=0`;
 
-    return {
-      ...cls,
-      courses: cls.courses.map((course) => ({
-        ...course,
-        target: cls.target,
-      })),
-    };
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch. Status code: ${response.status}`);
+    }
+
+    let data = await response.json() as CourseList;
+    data = data.filter((x) => x.id > 1 && x.format != "site")
+    return data;
   } catch (error) {
-    console.error("Error fetching class:", error);
-    throw new Error("Failed to fetch class.");
+    console.error('Error fetching course by slug:', error);
+    throw new Error('Failed to fetch course by slug.');
   }
 }
 
-export async function getClassesForTarget(target: string) {
+export async function fetchPublicSheetAsCSV(sheetId: string, sheetName: string) {
+  const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${sheetName}`;
+
   try {
-    const classesForTarget = (await prisma.classes.findMany({
-      where: {
-        target,
-      },
-      include: {
-        courses: true,
-      },
-      cacheStrategy: {
-        ttl: process.env.NODE_ENV === "production" ? 300 : 0,
-      },
-    })) as classes[];
-
-    return classesForTarget.map((openClass) => ({
-      ...openClass,
-      courses: openClass.courses.map
-        ? openClass.courses.map((course) => ({
-            ...course,
-            target: openClass.target,
-          }))
-        : [],
-    }));
+    const response = await fetch(url);
+    const csvData = await response.text(); // CSV string
+    console.log('CSV Data:', csvData);
+    return Papa.parse(csvData);
   } catch (error) {
-    console.error("Error fetching classes for target:", error);
-    throw new Error("Failed to fetch classes for target.");
+    console.error('Error fetching CSV:', error);
+    throw error;
   }
 }
+
+export type CatalogRow = {
+  Name: string,
+  Code: string,
+  Department: string,
+  Prerequisites: string,
+  Corequisites: string,
+  is_AJ: string,
+  Desc_EN: string,
+  Desc_UR: string,
+}
+
+// https://docs.google.com/spreadsheets/d/1uAGCU23jHja9uBnvpoLl3RebQofEhJrYoiMBhtPgZVE/edit?gid=0#gid=0
+export async function getCourseStatic(): Papa.ParseResult<CatalogRow> {
+  const url = `https://docs.google.com/spreadsheets/d/1uAGCU23jHja9uBnvpoLl3RebQofEhJrYoiMBhtPgZVE/gviz/tq?tqx=out:csv&sheet=Courses`;
+
+  try {
+    const response = await fetch(url);
+    const csvData = await response.text(); // CSV string
+    console.log('CSV Data:', csvData);
+    return Papa.parse<CatalogRow>(csvData, { header: true });
+  } catch (error) {
+    console.error('Error fetching CSV:', error);
+    throw error;
+  }
+}
+

@@ -29,15 +29,20 @@ export default function Header() {
             </Link>
             {name === "Courses" && (
               <div className="absolute z-10 hidden flex-col gap-1 rounded-sm bg-primary px-2 group-hover/courses:flex">
-                {courses.map(({ name, href }, idx) => (
-                  <Link
-                    className="text-nowrap text-secondary-dark"
-                    key={idx}
-                    href={href}
-                  >
-                    {name}
-                  </Link>
-                ))}
+                <Link
+                  className="text-nowrap text-secondary-dark"
+                  key={0}
+                  href="/courses/list"
+                >
+                  Open Courses
+                </Link>
+                <Link
+                  className="text-nowrap text-secondary-dark"
+                  key={1}
+                  href="/courses/catalog"
+                >
+                  Course Catalog
+                </Link>
               </div>
             )}
           </div>

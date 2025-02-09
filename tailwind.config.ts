@@ -16,8 +16,10 @@ const config: Config = {
       colors: {
         primary: "#f7f5f3",
         "primary-dark": "#efebe6",
-        secondary: "#964f75",
-        "secondary-dark": "#5a334d",
+        secondary: "oklch(52.5% 0.1276 0.2)",
+        "secondary-dark": "oklch(38% 0.1284 0.29)",
+        tertiary: "oklch(70.22% 0.1025 60.74)",
+        "tertiary-dark": "oklch(55.22% 0.1025 60.74)"
       },
       borderRadius: {
         lg: "var(--radius)",

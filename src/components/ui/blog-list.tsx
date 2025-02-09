@@ -6,13 +6,14 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import ObjectId from "bson-objectid";
+import { BlogEntriesResponse } from "@/actions/moodleTypes";
 
 interface Props {
   searchTerm: string;
 }
 
 export default function BlogList({ searchTerm }: Props) {
-  const [blogs, setBlogs] = useState<blog[] | null>(null);
+  const [blogs, setBlogs] = useState<BlogEntriesResponse | null>(null);
 
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -39,8 +40,8 @@ export default function BlogList({ searchTerm }: Props) {
     );
   }
 
-  const filteredBlogs = blogs.filter((blog) =>
-    blog.title.toLowerCase().includes(searchTerm.toLowerCase()),
+  const filteredBlogs = blogs.entries.filter((blog) =>
+    blog.subject.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   if (filteredBlogs.length === 0) {
@@ -49,15 +50,15 @@ export default function BlogList({ searchTerm }: Props) {
 
   return (
     <div className="flex flex-col gap-4">
-      {filteredBlogs.map(({ id, slug, title, author }) => (
-        <div key={id} className="flex flex-row justify-between">
-          <Link href={`/blog/${slug}`}>
-            {title}&nbsp;
-            <span className="text-xs text-gray-500">by {author}</span>
+      {filteredBlogs.map((blog) => (
+        <div key={blog.id} className="flex flex-row justify-between">
+          <Link href={`/blog/${blog.id}`}>
+            {blog.subject}&nbsp;
+            <span className="text-xs text-gray-500">by Al-Asl</span>
           </Link>
           <span>
             {format(
-              new ObjectId(id).getTimestamp().toISOString(),
+              new ObjectId(blog.lastmodified).getTimestamp().toISOString(),
               "LLLL d, yyyy",
             )}
           </span>
