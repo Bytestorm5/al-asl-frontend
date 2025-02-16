@@ -1,7 +1,5 @@
-// Server Component
+// Server Component: pages/catalog.tsx
 import { getCourseStatic, CatalogRow } from "@/actions/db";
-import CourseCategoriesView from "@/components/ui/CourseCategory";
-import { Course } from "@/actions/moodleTypes";
 
 interface Props {
   params: {
@@ -11,8 +9,8 @@ interface Props {
 
 export default async function Page({ params: { target } }: Props) {
   const all_classes = (await getCourseStatic()).data as CatalogRow[];
-  console.log(typeof all_classes)
-  // Organize classes by category
+
+  // Organize classes by department
   const departments: Record<string, CatalogRow[]> = {};
   for (const cls of all_classes) {
     if (departments.hasOwnProperty(cls.Department)) {
@@ -21,28 +19,46 @@ export default async function Page({ params: { target } }: Props) {
       departments[cls.Department] = [cls];
     }
   }
-  // Pass pre-fetched data to the client component
+
   return (
-    <main className="flex min-h-screen flex-col p-12">
+    <main className="min-h-screen p-8">
       {Object.entries(departments).map(([dept, classes]) => (
-        <div key={dept} id={dept} className="mb-4">
-          {/* Render meaningful content here */}
-          <h2 className="text-2xl">{dept}</h2>
-          <div className="flex flex-row gap-4 flex-wrap justify-around">
+        <section key={dept} id={dept} className="mb-10">
+          <h2 className="text-3xl font-bold text-gray-800 mb-6 border-b-2 border-gray-300 pb-2">
+            {dept}
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {classes.map((cls) => (
-              <div id={cls.Code} className="w-96">
-                <b>{cls.Code}— {cls.Name}</b>
-                <blockquote className="ml-3">
-                  { cls.Prerequisites.trim().length > 0 ? <i>Prerequisites: {cls.Prerequisites}</i> : <></>}                
-                  { cls.Corequisites.trim().length > 0 ? <i>Corequisites: {cls.Corequisites}</i> : <></>}
-                  { cls.Desc_EN.split('\n\n').map((line) => (<p className="mb-1">{line}</p>)) }
-                </blockquote>                
-              </div>
+              cls.is_active === "TRUE" ?
+              <div
+                key={cls.Code}
+                className="bg-white shadow rounded-lg p-4 hover:shadow-xl transition-shadow"
+              >
+                <h3 className="text-xl font-semibold text-gray-700 mb-2">
+                  {cls.Code} — {cls.Name}
+                </h3>
+                <div className="text-gray-600 text-sm space-y-2">
+                  {cls.Prerequisites.trim().length > 0 && (
+                    <p>
+                      <strong>Prerequisites:</strong>{" "}
+                      <em>{cls.Prerequisites}</em>
+                    </p>
+                  )}
+                  {cls.Corequisites.trim().length > 0 && (
+                    <p>
+                      <strong>Corequisites:</strong>{" "}
+                      <em>{cls.Corequisites}</em>
+                    </p>
+                  )}
+                  {cls.Desc_EN.split("\n\n").map((line, index) => (
+                    <p key={index}>{line}</p>
+                  ))}
+                </div>
+              </div> : <></>
             ))}
           </div>
-        </div>
+        </section>
       ))}
     </main>
   );
 }
-

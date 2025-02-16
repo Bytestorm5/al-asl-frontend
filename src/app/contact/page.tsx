@@ -1,4 +1,5 @@
 import { ContactForm } from "@/components/ui/contact-form";
+import PrimaryButton from "@/components/ui/primary-button";
 
 export default function ContactPage() {
   return (
@@ -7,10 +8,15 @@ export default function ContactPage() {
         Contact Us
       </h1>
       <p className="mb-8 max-w-2xl text-center text-lg text-secondary">
-        Have a question or want to get in touch? Fill out the form below, and
-        we&apos;ll get back to you as soon as possible.
+        You can join our WhatsApp channel below:
       </p>
-      <ContactForm />
+      <PrimaryButton
+        asLink
+        className="z-10 rounded-md asl-gradient px-6 py-4 text-sm text-white font-semibold"
+        href="https://www.whatsapp.com/channel/0029Vb32vMx6xCSGjYpIvq1B"
+      >
+          Join WhatsApp
+      </PrimaryButton>
     </main>
   );
 }

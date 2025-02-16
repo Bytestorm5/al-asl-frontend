@@ -14,10 +14,10 @@ const courses = [
 
 export default function Header() {
   return (
-    <header className="flex flex-row items-center justify-between px-16 py-12">
+    <header className="flex flex-row items-center justify-between px-16 py-4">
       <Link href="/">
         <img
-          className="max-h-12 w-auto max-w-full"
+          className="max-h-20 w-auto max-w-full"
           src="/images/header-banner.png"
         />
       </Link>

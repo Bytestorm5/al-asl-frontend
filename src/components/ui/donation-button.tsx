@@ -9,8 +9,8 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement>;
 export default function DonationButton({ className, ...props }: Props) {
   return (
     <PrimaryButton
-      name="donation"
-      onClick={() => open("https://donorbox.org/mathaniyy-2024")}
+      name="portal"
+      onClick={() => open("https://moodle.al-asl.com/moodle")}
       className={cn(
         className,
         "font-semibold uppercase tracking-widest",
@@ -19,7 +19,7 @@ export default function DonationButton({ className, ...props }: Props) {
       )}
       {...props}
     >
-      Donation
+      To Portal
     </PrimaryButton>
   );
 }

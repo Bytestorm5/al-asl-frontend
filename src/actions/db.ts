@@ -7,7 +7,7 @@ export async function getOpenClasses() {
   try {
     const url = `https://moodle.al-asl.com/moodle/webservice/rest/server.php?wstoken=${process.env.MOODLE_TOKEN}&wsfunction=core_course_get_courses&moodlewsrestformat=json`
     
-    const response = await fetch(url);
+    const response = await fetch(url, { cache: "no-store" });
 
     // Check if the request was successful
     if (!response.ok) {
@@ -30,7 +30,7 @@ export async function getCourseCategories(): Promise<Record<number, CourseCatego
   try {
     const url = `https://moodle.al-asl.com/moodle/webservice/rest/server.php?wstoken=${process.env.MOODLE_TOKEN}&wsfunction=core_course_get_categories&moodlewsrestformat=json`;
     
-    const response = await fetch(url);
+    const response = await fetch(url, { cache: "no-store" });
 
     // Check if the request was successful
     if (!response.ok) {
@@ -96,7 +96,8 @@ export type CatalogRow = {
   Department: string,
   Prerequisites: string,
   Corequisites: string,
-  is_AJ: string,
+  is_AJ: "TRUE" | "FALSE",
+  is_active: "TRUE" | "FALSE",
   Desc_EN: string,
   Desc_UR: string,
 }

@@ -4,6 +4,7 @@ import { useState } from "react";
 import MotionDiv from "@/components/ui/motion-div";
 import { cn } from "@/lib/cn";
 import { Course } from "@/actions/moodleTypes";
+import extMoodleText from "@/lib/mlang";
 
 interface CourseCategoriesViewProps {
   categories: Record<number, Course[]>;
@@ -24,7 +25,8 @@ export default function CourseCategoriesView({
       [categoryId]: !prev[categoryId],
     }));
   };
-
+  console.log(Object.entries(categories))
+  console.log(Object.entries(categoryInfo))
   return (
     <main className="flex min-h-screen flex-col items-center">
       <div className="mb-12 mt-8 flex flex-col items-center">
@@ -33,10 +35,10 @@ export default function CourseCategoriesView({
       </div>
       {Object.entries(categories).map(([category_id, classes]) => {
         const categoryId = Number(category_id);
-        const isExpanded = expandedCategories[categoryId] || false;
+        const isExpanded = expandedCategories[categoryId] ?? true;
 
         return (
-          <div key={categoryId} className="w-full mb-6">
+          <div key={categoryId} className="w-5/6 mb-6">
             <div
               className="cursor-pointer p-4 bg-secondary text-white rounded-md shadow-md z-2"
               onClick={() => toggleCategory(categoryId)}
@@ -66,31 +68,19 @@ export default function CourseCategoriesView({
                     })}
                   >
                     <span className="text-center text-2xl font-medium text-secondary">
-                      {cls.displayname}
+                      {extMoodleText(cls.displayname, "EN", cls.displayname)}
                     </span>
+                    <div className="text-center text-sm text-primary my-2">
+                      {
+                        extMoodleText(cls.summary, "TAGS", "Closed").split('|').map((s) => (
+                          <span className="bg-secondary-dark p-1 rounded-2xl mx-1">{s}</span>
+                        ))
+                      }
+                    </div>
                     <span
                       className="text-center font-light"
-                      dangerouslySetInnerHTML={{ __html: cls.summary }}
+                      dangerouslySetInnerHTML={{ __html: extMoodleText(cls.summary, "EN", cls.summary) }}
                     ></span>
-                    <div className="mt-4 flex flex-row flex-wrap justify-evenly">
-                      <div
-                        key={idx}
-                        className="flex max-w-60 flex-col items-center justify-center"
-                      >
-                        {cls.visible ? (
-                          <a
-                            className="mt-2 text-center text-sm font-medium text-secondary-dark"
-                            href={`https://moodle.al-asl.com/moodle/course/view.php?id=${cls.id}`}
-                          >
-                            Registration Open
-                          </a>
-                        ) : (
-                          <span className="mt-2 text-center text-sm font-medium text-secondary-dark">
-                            Registration Closed
-                          </span>
-                        )}
-                      </div>
-                    </div>
                   </MotionDiv>
                 ))}
               </div>

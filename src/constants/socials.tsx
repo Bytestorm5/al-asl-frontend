@@ -1,20 +1,10 @@
 import { Social } from "@/types/social";
-import { FaFacebookF, FaInstagram, FaYoutube } from "react-icons/fa6";
+import { FaWhatsapp } from "react-icons/fa6";
 
 export default [
   {
-    name: "Facebook",
-    url: "https://www.facebook.com/AzharulJannahGlobal",
-    icon: <FaFacebookF />,
-  },
-  {
-    name: "Instagram",
-    url: "https://www.instagram.com/azharuljannah1",
-    icon: <FaInstagram />,
-  },
-  {
-    name: "YouTube",
-    url: "https://www.youtube.com/channel/UCoC27kw98r7goCs67jUzntg",
-    icon: <FaYoutube />,
+    name: "WhatsApp",
+    url: "https://www.whatsapp.com/channel/0029Vb32vMx6xCSGjYpIvq1B",
+    icon: <FaWhatsapp />,
   },
 ] as Social[];

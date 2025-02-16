@@ -15,6 +15,6 @@ export async function addToMailList({
     firstName,
     lastName,
     unsubscribed: false,
-    audienceId: "95ee5756-438e-4cbc-b985-913056e03827",
+    audienceId: "67c53857-bd80-4978-8319-74e8adcd1c0f",
   });
 }
