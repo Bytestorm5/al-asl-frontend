@@ -103,7 +103,7 @@ export type CatalogRow = {
 }
 
 // https://docs.google.com/spreadsheets/d/1uAGCU23jHja9uBnvpoLl3RebQofEhJrYoiMBhtPgZVE/edit?gid=0#gid=0
-export async function getCourseStatic(): Papa.ParseResult<CatalogRow> {
+export async function getCourseStatic(): Promise<Papa.ParseResult<CatalogRow>> {
   const url = `https://docs.google.com/spreadsheets/d/1uAGCU23jHja9uBnvpoLl3RebQofEhJrYoiMBhtPgZVE/gviz/tq?tqx=out:csv&sheet=Courses`;
 
   try {
