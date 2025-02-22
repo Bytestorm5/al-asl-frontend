@@ -90,7 +90,7 @@ export default function CourseCategoriesView({
                     <div className="text-center text-sm text-primary my-2">
                       {
                         extMoodleText(cls.summary, "TAGS", "Closed").split('|').map((s) => (
-                          <span className="bg-secondary-dark p-1 rounded-2xl mx-1">{s}</span>
+                          <span className="bg-secondary-dark p-1 rounded-2xl mx-1" key={s}>{s}</span>
                         ))
                       }
                     </div>
