@@ -5,6 +5,7 @@ import MotionDiv from "@/components/ui/motion-div";
 import { cn } from "@/lib/cn";
 import { Course } from "@/actions/moodleTypes";
 import extMoodleText from "@/lib/mlang";
+import { Language, useLanguage } from "./LanguageContext";
 
 interface CourseCategoriesViewProps {
   categories: Record<number, Course[]>;
@@ -15,6 +16,22 @@ export default function CourseCategoriesView({
   categories,
   categoryInfo,
 }: CourseCategoriesViewProps) {
+  
+  const { currentLanguage: lang } = useLanguage();
+  const T: Record<Language, {
+    collapse: string;
+    expand: string;
+  }> = {
+    EN: {
+      collapse: "Collapse ▲",
+      expand: "Expand ▼",
+    },
+    UR: {
+      collapse: "بند کریں ▲",
+      expand: "کھولیں ▼",
+    },
+  };
+  
   const [expandedCategories, setExpandedCategories] = useState<
     Record<number, boolean>
   >({});
@@ -43,15 +60,15 @@ export default function CourseCategoriesView({
               className="cursor-pointer p-4 bg-secondary text-white rounded-md shadow-md z-2"
               onClick={() => toggleCategory(categoryId)}
             >
-              <h2 className="text-2xl font-bold">{categoryInfo[categoryId].name || "Unknown"}</h2>
+              <h2 className="text-2xl font-bold">{categoryInfo[categoryId].name}</h2>
               <p
                 className="text-sm font-light"
                 dangerouslySetInnerHTML={{
-                  __html: categoryInfo[categoryId].description || "",
+                  __html: categoryInfo[categoryId].description,
                 }}
               ></p>
               <span className="block mt-2 text-right text-sm">
-                {isExpanded ? "Collapse ▲" : "Expand ▼"}
+                {isExpanded ? T[lang].collapse : T[lang].expand}
               </span>
             </div>
             {isExpanded && (
@@ -68,7 +85,7 @@ export default function CourseCategoriesView({
                     })}
                   >
                     <span className="text-center text-2xl font-medium text-secondary">
-                      {extMoodleText(cls.displayname, "EN", cls.displayname)}
+                      {extMoodleText(cls.displayname, lang, cls.displayname)}
                     </span>
                     <div className="text-center text-sm text-primary my-2">
                       {
@@ -79,7 +96,7 @@ export default function CourseCategoriesView({
                     </div>
                     <span
                       className="text-center font-light"
-                      dangerouslySetInnerHTML={{ __html: extMoodleText(cls.summary, "EN", cls.summary) }}
+                      dangerouslySetInnerHTML={{ __html: extMoodleText(cls.summary, lang, cls.summary) }}
                     ></span>
                   </MotionDiv>
                 ))}

@@ -3,13 +3,15 @@
 import { ButtonHTMLAttributes } from "react";
 import PrimaryButton from "./primary-button";
 import { cn } from "@/lib/cn";
+import { useLanguage } from "./LanguageContext";
 
 type Props = ButtonHTMLAttributes<HTMLButtonElement>;
 
 export default function DonationButton({ className, ...props }: Props) {
+  const { currentLanguage: lang, setCurrentLanguage } = useLanguage();
   return (
     <PrimaryButton
-      name="portal"
+      name="login"
       onClick={() => open("https://moodle.al-asl.com/moodle")}
       className={cn(
         className,
@@ -19,7 +21,7 @@ export default function DonationButton({ className, ...props }: Props) {
       )}
       {...props}
     >
-      To Portal
+      {lang == "EN" ? "Login" : "لاگ ان"}
     </PrimaryButton>
   );
 }

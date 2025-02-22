@@ -1,9 +1,33 @@
+"use client";
+
 import socials from "@/constants/socials";
 import Image from "next/image";
 import Social from "@/components/ui/social";
 import FooterSection from "../ui/footer-section";
+import { useLanguage, translations, Language } from "../ui/LanguageContext";
 
 export default function Footer() {
+  const { currentLanguage: lang, setCurrentLanguage } = useLanguage();
+  const T: Record<Language, {
+    openCourses: string;
+    courseCatalog: string;
+    quickLinks: string;
+    moreInfo: string;
+  }> = {
+    EN: {
+      openCourses: "Open Courses",
+      courseCatalog: "Course Catalog",
+      quickLinks: "Quick Links",
+      moreInfo: "More Info"
+    },
+    UR: {
+      openCourses: "کھلے کورسز",
+      courseCatalog: "کورس کیٹلاگ",
+      quickLinks: "فوری روابط",
+      moreInfo: "مزید معلومات"
+    },
+  };
+  
   return (
     <footer className="flex flex-row justify-between bg-secondary-dark p-12">
       <div className="flex flex-col">
@@ -23,26 +47,25 @@ export default function Footer() {
           ))}
         </div>
         <span className="mt-20 text-sm font-light text-white">
-          © {new Date().getFullYear()} Azharul Jannah, All Rights Reserved
+          © {new Date().getFullYear()} {lang === "EN" ? "Al-Asl, All Rights Reserved" : "العسل، جملہ حقوق محفوظ ہیں۔"}
         </span>
       </div>
       <div className="flex flex-row gap-20">
         <FooterSection
-          label="Quick Links"
+          label={T[lang].quickLinks}
           routes={[
-            { label: "Home", path: "/" },
-            { label: "About", path: "/about" },
-            { label: "Courses for Women", path: "/" },
-            { label: "Courses for Kids", path: "/" },
+            { label: translations[lang]["Home"], path: "/" },
+            { label: translations[lang]["About"], path: "/about" },
+            { label: T[lang].openCourses, path: "/courses/list" },
+            { label: T[lang].courseCatalog, path: "/courses/catalog" },
           ]}
         />
         <FooterSection
-          label="More Info"
+          label={T[lang].moreInfo}
           routes={[
-            { label: "Contact", path: "/contact" },
-            { label: "FAQs", path: "/faq" },
-            { label: "Terms of Use", path: "/terms-of-use" },
-            { label: "Privacy Policy", path: "/privacy-policy" },
+            { label: translations[lang]["Contact"], path: "/contact" },
+            { label: translations[lang]["Terms of Use"], path: "/terms-of-use" },
+            { label: translations[lang]["Privacy Policy"], path: "/privacy-policy" },
           ]}
         />
       </div>

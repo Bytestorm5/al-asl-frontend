@@ -3,11 +3,9 @@ import Header from "@/components/layout/header";
 import MenuOverlay from "@/components/ui/menu-overlay";
 import routes from "@/constants/routes";
 import type { Metadata } from "next";
-import { Montserrat } from "next/font/google";
 import { headers } from "next/headers";
 import "./globals.css";
-
-const montserrat = Montserrat({ subsets: ["latin"] });
+import { LanguageProvider } from "@/components/ui/LanguageContext"
 
 export function generateMetadata(): Metadata {
   const pathname = headers().get("x-pathname");
@@ -25,12 +23,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={montserrat.className}>
-        <Header />
-        <MenuOverlay />
-        {children}
-        <Footer />
+    <html lang="en">      
+      <body>
+        <LanguageProvider>          
+            <Header />
+            <MenuOverlay />
+            {children}
+            <Footer />        
+        </LanguageProvider>      
       </body>
     </html>
   );

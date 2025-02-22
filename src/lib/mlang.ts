@@ -1,4 +1,7 @@
 export default function extMoodleText(text: string, lang: string, fallback: undefined | string = undefined) {
+    if (!text.includes("{mlang}")) {
+        return fallback ?? ""
+    }
     let startKey = `{mlang ${lang}}`
     let endKey = "{mlang}"
     let start = text.indexOf(startKey) + startKey.length
