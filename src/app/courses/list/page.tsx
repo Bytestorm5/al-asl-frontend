@@ -1,4 +1,6 @@
 // Server Component
+export const dynamic = "force-dynamic";
+
 import { getCourseCategories, getOpenClasses, getCourseStatic } from "@/actions/db";
 import CourseCategoriesView from "@/components/ui/CourseCategory";
 import { Course } from "@/actions/moodleTypes";
