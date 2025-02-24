@@ -4,15 +4,16 @@ import { format } from "date-fns";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-type Params = {
+// Rename so there's no clash with Next's 'Params' type
+type BlogPageParams = {
   slug: string;
 };
 
-type Props = {
-  params: Params;
+type BlogPageProps = {
+  params: BlogPageParams;
 };
 
-export async function generateMetadata({ params }: Props) {
+export async function generateMetadata({ params }: BlogPageProps) {
   const blog = await getBlog(params.slug);
 
   return {
@@ -20,7 +21,7 @@ export async function generateMetadata({ params }: Props) {
   };
 }
 
-export default async function Post({ params }: Props) {
+export default async function Post({ params }: BlogPageProps) {
   const blog = await getBlog(params.slug);
 
   if (!blog) {
@@ -42,8 +43,7 @@ export default async function Post({ params }: Props) {
           )}
         </div>
 
-        {/* <Markdown remarkPlugins={[remarkGfm]}>{blog.summary}</Markdown> */}
-        <div dangerouslySetInnerHTML={{__html: blog.summary}}></div>
+        <div dangerouslySetInnerHTML={{ __html: blog.summary }} />
       </article>
     </div>
   );
