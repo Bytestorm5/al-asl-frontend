@@ -3,22 +3,24 @@ import ObjectId from "bson-objectid";
 import { format } from "date-fns";
 import { notFound } from "next/navigation";
 
-interface BlogPageProps {
-  params: {
-    slug: string;
-  };
-}
-
-export async function generateMetadata({ params: { slug } }: BlogPageProps) {
-  const blog = await getBlog(slug);
+export async function generateMetadata({ searchParams }: { searchParams: { id?: string } }) {
+  const id = searchParams.id;
+  if (!id) {
+    return { title: "Blog not found" };
+  }
+  const blog = await getBlog(id);
   return {
     title: blog?.subject || "Blog Not Found",
   };
 }
 
-export default async function Post({ params: { slug } }: BlogPageProps) {
-  const blog = await getBlog(slug);
+export default async function Post({ searchParams }: { searchParams: { id?: string } }) {
+  const id = searchParams.id;
+  if (!id) {
+    notFound();
+  }
 
+  const blog = await getBlog(id);
   if (!blog) {
     notFound();
   }
