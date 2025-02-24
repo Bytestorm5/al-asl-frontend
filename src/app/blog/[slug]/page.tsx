@@ -1,25 +1,23 @@
 import { getBlog } from "@/actions/blog";
 import ObjectId from "bson-objectid";
 import { format } from "date-fns";
-import Markdown from "react-markdown";
-import remarkGfm from "remark-gfm";
+// import Markdown from "react-markdown";
+// import remarkGfm from "remark-gfm";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: string };
-}) {
+interface BlogPageProps {
+  params: {
+    slug: string;
+  };
+}
+
+export async function generateMetadata({ params }: BlogPageProps) {
   const blog = await getBlog(params.slug);
   return {
     title: blog?.subject,
   };
 }
 
-export default async function Post({
-  params,
-}: {
-  params: { slug: string };
-}) {
+export default async function Post({ params }: BlogPageProps) {
   const blog = await getBlog(params.slug);
 
   if (!blog) {
@@ -41,7 +39,8 @@ export default async function Post({
           )}
         </div>
 
-        {/* If you prefer Markdown: <Markdown remarkPlugins={[remarkGfm]}>{blog.summary}</Markdown> */}
+        {/* If you prefer Markdown, uncomment the following line */}
+        {/* <Markdown remarkPlugins={[remarkGfm]}>{blog.summary}</Markdown> */}
         <div dangerouslySetInnerHTML={{ __html: blog.summary }} />
       </article>
     </div>
