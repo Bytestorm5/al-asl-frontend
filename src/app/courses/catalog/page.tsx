@@ -1,8 +1,8 @@
 "use client";
+export const dynamic = "force-dynamic";
 
 import React, { useEffect, useState } from "react";
 import { useLanguage } from "@/components/ui/LanguageContext";
-import { PageProps } from "../../../../.next/types/app/layout";
 
 // Define your CatalogRow type (if not already globally available)
 export interface CatalogRow {
@@ -20,7 +20,7 @@ interface ApiResponse {
   data: CatalogRow[];
 }
 
-interface Props extends PageProps {
+interface Props {
   params: {
     target: string;
   };
