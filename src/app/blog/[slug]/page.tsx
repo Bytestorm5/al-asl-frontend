@@ -1,8 +1,7 @@
 import { getBlog } from "@/actions/blog";
 import ObjectId from "bson-objectid";
 import { format } from "date-fns";
-// import Markdown from "react-markdown";
-// import remarkGfm from "remark-gfm";
+import { notFound } from "next/navigation";
 
 interface BlogPageProps {
   params: {
@@ -10,18 +9,18 @@ interface BlogPageProps {
   };
 }
 
-export async function generateMetadata({ params }: BlogPageProps) {
-  const blog = await getBlog(params.slug);
+export async function generateMetadata({ params: { slug } }: BlogPageProps) {
+  const blog = await getBlog(slug);
   return {
-    title: blog?.subject,
+    title: blog?.subject || "Blog Not Found",
   };
 }
 
-export default async function Post({ params }: BlogPageProps) {
-  const blog = await getBlog(params.slug);
+export default async function Post({ params: { slug } }: BlogPageProps) {
+  const blog = await getBlog(slug);
 
   if (!blog) {
-    return <div className="text-center">Blog not found</div>;
+    notFound();
   }
 
   return (
@@ -30,7 +29,6 @@ export default async function Post({ params }: BlogPageProps) {
         <h1 className="mb-2 text-center text-4xl font-extrabold">
           {blog.subject}
         </h1>
-
         <div className="mb-6 text-center text-sm font-medium text-gray-500">
           Al-Asl •{" "}
           {format(
@@ -38,9 +36,6 @@ export default async function Post({ params }: BlogPageProps) {
             "LLLL d, yyyy"
           )}
         </div>
-
-        {/* If you prefer Markdown, uncomment the following line */}
-        {/* <Markdown remarkPlugins={[remarkGfm]}>{blog.summary}</Markdown> */}
         <div dangerouslySetInnerHTML={{ __html: blog.summary }} />
       </article>
     </div>
