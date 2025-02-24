@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useLanguage } from "@/components/ui/LanguageContext";
+import { PageProps } from "../../../../.next/types/app/layout";
 
 // Define your CatalogRow type (if not already globally available)
 export interface CatalogRow {
@@ -19,7 +20,7 @@ interface ApiResponse {
   data: CatalogRow[];
 }
 
-interface Props {
+interface Props extends PageProps {
   params: {
     target: string;
   };
