@@ -52,7 +52,7 @@ export default function BlogList({ searchTerm }: Props) {
     <div className="flex flex-col gap-4">
       {filteredBlogs.map((blog) => (
         <div key={blog.id} className="flex flex-row justify-between">
-          <Link href={`/blog/${blog.id}`}>
+          <Link href={`/blog/post?id=${blog.id}`}>
             {blog.subject}&nbsp;
             <span className="text-xs text-gray-500">by Al-Asl</span>
           </Link>
